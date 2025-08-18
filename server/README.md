@@ -1,31 +1,17 @@
-# Ticket Management System — Backend (Step 1)
+# Ticket Management System — Backend (Phase 2)
 
-**Stack:** Node.js, Express.js, MongoDB (Mongoose)  
+**Phase:** User Authentication & Authorization  
 **Date:** 2025-08-18
 
-This Step 1 deliverable sets up the **project structure**, **MongoDB connection**, and **basic ticket management API** (CRUD).
+This update adds **JWT-based authentication**, a **User** model, and **per-user ticket scoping**.
 
-## Quick start
-```bash
-cd server
-cp .env.example .env
-npm install
-npm run dev
-# Health check
-curl http://localhost:5000/health
-```
-
-## Environment
-- `PORT` — default 5000
-- `MONGO_URI` — your MongoDB connection string
-- `JWT_SECRET` — reserved for Step 2 (auth); middleware stub included
-
-## API (initial)
-- `GET /health` → `{ status: 'ok' }`
-- `GET /api/tickets` — list tickets
-- `POST /api/tickets` — create ticket
-- `GET /api/tickets/:id` — get ticket
-- `PATCH /api/tickets/:id` — update ticket
-- `DELETE /api/tickets/:id` — delete ticket
-
-> In Step 2 we'll add **auth (JWT)** and scope tickets to each user.
+## What changed
+- Added **User model** (`name`, `username`, `email`, `passwordHash`, `role`).
+- New endpoints:
+  - `POST /api/auth/register` — create account
+  - `POST /api/auth/login` — login with username/email + password
+  - `GET /api/auth/me` — returns the authenticated user
+- Added **JWT middleware** (`Authorization: Bearer <token>`).
+- Tickets are now **associated to the creator** (`createdBy`) and **secured**:
+  - **Users** can see **only their own** tickets and can update/delete only their tickets.
+  - **Tech/Admin** can see **all** tickets and update/delete any.

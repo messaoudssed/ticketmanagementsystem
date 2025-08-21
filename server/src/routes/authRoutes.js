@@ -8,7 +8,8 @@ const router = Router()
 router.post('/register', async (req, res) => {
   try {
     const { name, username, email, password, role } = req.body
-    if (!name || !username || !email || !password) return res.status(400).json({ message: 'Missing fields' })
+    if (!name || !username || !email || !password)
+      return res.status(400).json({ message: 'Missing fields' })
     const exists = await User.findOne({ $or: [{ email }, { username }] })
     if (exists) return res.status(409).json({ message: 'User already exists' })
     const passwordHash = await bcrypt.hash(password, 10)
@@ -33,13 +34,12 @@ router.post('/login', async (req, res) => {
   }
 })
 
-router.get('/me', async (req, res) => {
+router.get('/me', (req, res) => {
   const h = req.headers.authorization || ''
   const token = h.startsWith('Bearer ') ? h.slice(7) : null
   if (!token) return res.status(401).json({ message: 'Missing token' })
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET)
-    res.json(payload)
+    res.json(jwt.verify(token, process.env.JWT_SECRET))
   } catch {
     res.status(401).json({ message: 'Invalid token' })
   }

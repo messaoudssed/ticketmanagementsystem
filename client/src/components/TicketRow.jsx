@@ -4,7 +4,7 @@ export default function TicketRow({ t, onSave, onDelete }) {
   const [edit, setEdit] = useState(false)
   const [form, setForm] = useState({
     title: t.title, description: t.description || '', deadline: t.deadline?.slice(0,10) || '',
-    status: t.status || 'not_addressed', assigneeName: t.assigneeName || ''
+    status: t.status || 'not_addressed', assigneeName: t.assigneeName || '', priority: t.priority ?? 3
   })
   const onChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
@@ -17,6 +17,7 @@ export default function TicketRow({ t, onSave, onDelete }) {
         <td>{t.title}</td>
         <td><span className={`status ${t.status}`}>{t.status}</span></td>
         <td>{t.deadline ? new Date(t.deadline).toLocaleDateString() : '-'}</td>
+        <td><span className="badge">P{t.priority ?? 3}</span></td>
         <td style={{ whiteSpace:'nowrap' }}>
           <button onClick={()=>setEdit(true)}>Edit</button>{' '}
           <button onClick={remove}>Delete</button>
@@ -36,6 +37,11 @@ export default function TicketRow({ t, onSave, onDelete }) {
         </select>
       </td>
       <td><input type="date" name="deadline" value={form.deadline} onChange={onChange} /></td>
+      <td>
+        <select name="priority" value={form.priority} onChange={onChange}>
+          <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option><option value={5}>5</option>
+        </select>
+      </td>
       <td style={{ display:'flex', gap:8 }}>
         <button className="primary" onClick={async ()=>{ await save() }}>Save</button>
         <button onClick={()=>setEdit(false)}>Cancel</button>
